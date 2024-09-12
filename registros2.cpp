@@ -1,61 +1,71 @@
-///Ejercicio:
-///Autor:DEK
-///Fecha:
-///Comentario:
-
-# include<iostream>
-
+#include <iostream>
 using namespace std;
-///C++ lenguaje orientado a objetos
-///POO (OOP) es una forma de entender la programacion -paradigma-
-/// distinta de la programación estructurada
 
-class Fecha{
-    private:///sólo es accesible dentro de la clase
-        int dia, mes, anio;///propiedades->variables de la clase
-    public:///puede ser accedido tanto dentro como fuera de la clase
-         void Cargar(){ ///métodos o funciones de la clase
-            int d;
-            cout<<"DIA ";
-            cin>>d;
-            setDia(d);
-            cout<<"MES ";
-            cin>>mes;
-            cout<<"ANIO ";
-            cin>>anio;
-         }
-         void Mostrar();
-        ///setter
-         void setDia(int d){
-             if(d>=1 &&d<=31)dia=d;
-             else dia=0;
-             }
-        void setMes(int m){mes=m;}
-        void setAnio(int a){anio=a;}
-        ///getter
-        int getDia(){return dia;}
-        int getMes(){return mes;}
-        int getAnio(){return anio;}
+class Empresa{
+    private:
+        char nombre[30];
+        int cantidadDeEmpleados;
+        int provincia;
+    public:
+        void cargar();
+        void mostrar();
 };
 
-void Fecha::Mostrar(){
-    cout<<dia<<"/"<<mes<<"/"<<anio<<endl;
+void Empresa::cargar(){
+    cout << "INGRESE EL NOMBRE: ";
+    cin >> nombre;
+    cout << "INGRESE LA CANTIDAD DE EMPLEADOS: ";
+    cin >> cantidadDeEmpleados;
+    cout << "INGRESE LA PROVINCIA: ";
+    cin >> provincia;
 }
 
-int main(){
-    Fecha hoy;
-    hoy.Cargar();
-    hoy.Mostrar();
-    hoy.setDia(21);
-    hoy.setMes(8);
-    hoy.setAnio(2024);
-    hoy.Mostrar();
-	cout<<endl;
-	cout<<hoy.getAnio();
-	if(hoy.getMes()==8){
-        cout<<"ESTAMOS EN AGOSTO"<<endl;
-	}
-	system("pause");
-	return 0;
+void Empresa::mostrar(){
+    cout << "NOMBRE: " << nombre << endl;
+    cout << "CANTIDAD DE EMPLEADOS: " << cantidadDeEmpleados << endl;
+    cout << "PROVINCIA: " << provincia << endl;
 }
 
+void cargarEnArchivo(Empresa obj){
+    FILE *p;
+
+    p = fopen("empresa.dat","ab");
+
+    if(p == nullptr){
+        cout << "ERROR EN LA CARGA DE ARCHIVOS" << endl;
+        return;
+    }
+
+    for(int i=1;i<=3;i++){
+        obj.cargar();
+        fwrite(&obj, sizeof obj, 1, p);
+    }
+
+    fclose(p);
+}
+
+void MostrarEnArchivo(Empresa obj){
+    FILE *p;
+
+    p = fopen("empresa.dat","rb");
+
+    if(p == nullptr){
+        cout << "ERROR EN LA CARGA DE ARCHIVOS" << endl;
+        return;
+    }
+
+    while(fread(&obj, sizeof obj, 1, p)){
+        obj.mostrar();
+    }
+    
+    fclose(p);
+}
+
+int main() {
+   Empresa obj[3];
+
+   //cargarEnArchivo(obj[3]);
+   MostrarEnArchivo(obj[3]);
+
+   return 0;
+}
